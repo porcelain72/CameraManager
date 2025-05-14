@@ -16,7 +16,8 @@ public final class CameraService: NSObject, ObservableObject {
     public init(settings: VideoSettings) {
         self.settings = settings
         super.init()
-        configureSession()34    }
+        configureSession()
+    }
 
     public func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
         if previewLayer == nil {
