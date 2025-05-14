@@ -16,8 +16,7 @@ public final class CameraService: NSObject, ObservableObject {
     public init(settings: VideoSettings) {
         self.settings = settings
         super.init()
-        configureSession()
-    }
+        configureSession()34    }
 
     public func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
         if previewLayer == nil {
@@ -69,7 +68,7 @@ public final class CameraService: NSObject, ObservableObject {
                 self.session.startRunning()
             }
         }
-    }
+v    }
 
     public func stopSession() {
         if session.isRunning {
@@ -120,15 +119,12 @@ extension CameraService: AVCaptureFileOutputRecordingDelegate {
                            didFinishRecordingTo outputFileURL: URL,
                            from connections: [AVCaptureConnection],
                            error: Error?) {
-        isRecording = false
-        videoFileURL = outputFileURL
-
-        if let error = error {
-            print("❌ Recording error: \(error.localizedDescription)")
-            return
-        }
-
-        saveVideoToPhotos(url: outputFileURL)
+         print("✅ Finished recording: \(outputFileURL)")
+    if let error = error {
+        print("❌ Recording error: \(error.localizedDescription)")
     }
+    isRecording = false
+    videoFileURL = outputFileURL
+    saveVideoToPhotos(url: outputFileURL)    }
 }
 
