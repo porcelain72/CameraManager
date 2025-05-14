@@ -69,7 +69,7 @@ public final class CameraService: NSObject, ObservableObject {
             } else {
                 print("❌ No video connection found")
             }
-            print("✅ Added videoOutput")
+            print("✅ Added videoOutput\(videoOutput.description)")
         } else {
             print("❌ Couldn't add videoOutput")
         }
@@ -118,9 +118,11 @@ public final class CameraService: NSObject, ObservableObject {
         if videoOutput.isRecording {
             print("⚠️ Output already recording — should not happen")
         }
+        print(" videoOutput\(videoOutput.description)")
 
         videoOutput.startRecording(to: fileURL, recordingDelegate: self)
         isRecording = true
+        print(" videoOutput\(videoOutput.description)")
     }
 
 
@@ -133,7 +135,8 @@ public final class CameraService: NSObject, ObservableObject {
 
         print("⏹ Calling stopRecording()")
         videoOutput.stopRecording()
- 
+        print(" videoOutput\(videoOutput.description)")
+
     }
 
 
