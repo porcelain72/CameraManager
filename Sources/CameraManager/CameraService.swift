@@ -78,20 +78,28 @@ public final class CameraService: NSObject, ObservableObject {
     }
 
     public func startRecording() {
-        guard !isRecording else { return }
+    guard !isRecording else { return }
 
-        let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
-        let fileName = UUID().uuidString + ".mov"
-        let fileURL = tempDirectory.appendingPathComponent(fileName)
+    let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
+    let fileName = UUID().uuidString + ".mov"
+    let fileURL = tempDirectory.appendingPathComponent(fileName)
 
-        videoOutput.startRecording(to: fileURL, recordingDelegate: self)
-        isRecording = true
+    if let connection = videoOutput.connection(with: .video),
+       connection.isVideoOrientationSupported {
+        connection.videoOrientation = .portrait
     }
+
+    print("▶️ Starting recording to \(fileURL)")
+    videoOutput.startRecording(to: fileURL, recordingDelegate: self)
+    isRecording = true
+}
 
     public func stopRecording() {
-        guard isRecording else { return }
-        videoOutput.stopRecording()
-    }
+    guard isRecording else { return }
+    print("⏹ Stopping recording")
+    videoOutput.stopRecording()
+}
+
 
     private func saveVideoToPhotos(url: URL) {
         PHPhotoLibrary.shared().performChanges {
