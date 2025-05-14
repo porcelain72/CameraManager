@@ -7,7 +7,8 @@ public final class CameraService: NSObject, ObservableObject {
     private var videoOutput = AVCaptureMovieFileOutput()
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var currentDevice: AVCaptureDevice?
-    private var videoFileURL: URL?
+   public private(set) var videoFileURL: URL?
+
 
     @Published public var isRecording = false
     public var settings: VideoSettings
