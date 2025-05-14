@@ -57,6 +57,7 @@ public final class CameraService: NSObject, ObservableObject {
             session.addInput(micInput)
         }
 
+        
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
             if let connection = videoOutput.connection(with: .video) {
@@ -125,20 +126,14 @@ public final class CameraService: NSObject, ObservableObject {
 
     public func stopRecording() {
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.videoOutput.stopRecording()
-            print("⏱ Forced stopRecording() after delay")
-        }
-
-
-/*        guard isRecording else {
+        guard isRecording else {
             print("⚠️ Tried to stop but not recording")
             return
         }
 
         print("⏹ Calling stopRecording()")
         videoOutput.stopRecording()
- */
+ 
     }
 
 
@@ -158,6 +153,11 @@ public final class CameraService: NSObject, ObservableObject {
 
 // MARK: - AVCaptureFileOutputRecordingDelegate
 extension CameraService: AVCaptureFileOutputRecordingDelegate {
+    
+    public func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
+        
+        print("Strted recording")
+    }
     public func fileOutput(_ output: AVCaptureFileOutput,
                            didFinishRecordingTo outputFileURL: URL,
                            from connections: [AVCaptureConnection],
