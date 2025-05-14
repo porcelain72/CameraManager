@@ -124,13 +124,21 @@ public final class CameraService: NSObject, ObservableObject {
 
 
     public func stopRecording() {
-        guard isRecording else {
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            self.videoOutput.stopRecording()
+            print("⏱ Forced stopRecording() after delay")
+        }
+
+
+/*        guard isRecording else {
             print("⚠️ Tried to stop but not recording")
             return
         }
 
         print("⏹ Calling stopRecording()")
         videoOutput.stopRecording()
+ */
     }
 
 
