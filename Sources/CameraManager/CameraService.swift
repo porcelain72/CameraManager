@@ -59,6 +59,15 @@ public final class CameraService: NSObject, ObservableObject {
 
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
+            if let connection = videoOutput.connection(with: .video) {
+                if connection.isVideoOrientationSupported {
+                    connection.videoOrientation = .portrait
+                } else {
+                    print("⚠️ Orientation not supported")
+                }
+            } else {
+                print("❌ No video connection found")
+            }
             print("✅ Added videoOutput")
         } else {
             print("❌ Couldn't add videoOutput")
