@@ -68,7 +68,7 @@ public final class CameraService: NSObject, ObservableObject {
                 self.session.startRunning()
             }
         }
-v    }
+    }
 
     public func stopSession() {
         if session.isRunning {
