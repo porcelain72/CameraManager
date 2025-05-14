@@ -57,10 +57,13 @@ public final class CameraService: NSObject, ObservableObject {
             session.addInput(micInput)
         }
 
-        // Add output
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
+            print("✅ Added videoOutput")
+        } else {
+            print("❌ Couldn't add videoOutput")
         }
+
 
         session.commitConfiguration()
     }
