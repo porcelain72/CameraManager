@@ -21,7 +21,7 @@ public struct VideoSettings {
         }
     }
 
-    public enum Resolution {
+    public enum Resolution : String {
         case hd1280x720
         case hd1920x1080
         case hd4K3840x2160
