@@ -28,6 +28,8 @@ public final class CameraService: NSObject, ObservableObject {
     }
 
     private func configureSession() {
+        print("📸 Configuring session for position: \(settings.position)")
+
         session.beginConfiguration()
         session.sessionPreset = settings.avPreset
 
@@ -64,12 +66,17 @@ public final class CameraService: NSObject, ObservableObject {
     }
 
     public func startSession() {
-        if !session.isRunning {
-            DispatchQueue.global(qos: .userInitiated).async {
-                self.session.startRunning()
-            }
+        guard !session.isRunning else {
+            print("⚠️ Session already running")
+            return
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.session.startRunning()
+            print("✅ Session started")
         }
     }
+
 
     public func stopSession() {
         if session.isRunning {
@@ -78,27 +85,42 @@ public final class CameraService: NSObject, ObservableObject {
     }
 
     public func startRecording() {
-    guard !isRecording else { return }
+        guard !isRecording else {
+            print("⚠️ Already recording")
+            return
+        }
 
-    let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
-    let fileName = UUID().uuidString + ".mov"
-    let fileURL = tempDirectory.appendingPathComponent(fileName)
+        let tempDirectory = URL(fileURLWithPath: NSTemporaryDirectory())
+        let fileName = UUID().uuidString + ".mov"
+        let fileURL = tempDirectory.appendingPathComponent(fileName)
 
-    if let connection = videoOutput.connection(with: .video),
-       connection.isVideoOrientationSupported {
-        connection.videoOrientation = .portrait
+        print("▶️ Attempting to record to \(fileURL)")
+
+        if let connection = videoOutput.connection(with: .video),
+           connection.isVideoOrientationSupported {
+            connection.videoOrientation = .portrait
+            print("🔄 Set video orientation to portrait")
+        }
+
+        if videoOutput.isRecording {
+            print("⚠️ Output already recording — should not happen")
+        }
+
+        videoOutput.startRecording(to: fileURL, recordingDelegate: self)
+        isRecording = true
     }
 
-    print("▶️ Starting recording to \(fileURL)")
-    videoOutput.startRecording(to: fileURL, recordingDelegate: self)
-    isRecording = true
-}
 
     public func stopRecording() {
-    guard isRecording else { return }
-    print("⏹ Stopping recording")
-    videoOutput.stopRecording()
-}
+        guard isRecording else {
+            print("⚠️ Tried to stop but not recording")
+            return
+        }
+
+        print("⏹ Calling stopRecording()")
+        videoOutput.stopRecording()
+    }
+
 
 
     private func saveVideoToPhotos(url: URL) {
@@ -120,12 +142,18 @@ extension CameraService: AVCaptureFileOutputRecordingDelegate {
                            didFinishRecordingTo outputFileURL: URL,
                            from connections: [AVCaptureConnection],
                            error: Error?) {
-         print("✅ Finished recording: \(outputFileURL)")
-    if let error = error {
-        print("❌ Recording error: \(error.localizedDescription)")
+        print("📹 Delegate method called")
+        isRecording = false
+
+        if let error = error {
+            print("❌ Error during recording: \(error.localizedDescription)")
+            return
+        }
+
+        print("✅ Recording saved to temp file: \(outputFileURL)")
+        videoFileURL = outputFileURL
+        saveVideoToPhotos(url: outputFileURL)
     }
-    isRecording = false
-    videoFileURL = outputFileURL
-    saveVideoToPhotos(url: outputFileURL)    }
+
 }
 
