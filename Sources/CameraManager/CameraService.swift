@@ -136,7 +136,7 @@ public final class CameraService: NSObject, ObservableObject {
         print("⏹ Calling stopRecording()")
         videoOutput.stopRecording()
         print(" videoOutput\(videoOutput.description)")
-
+        isRecording = false
     }
 
 
