@@ -9,12 +9,14 @@ public final class CameraService: NSObject, ObservableObject {
     private var currentDevice: AVCaptureDevice?
    public private(set) var videoFileURL: URL?
 
+    public var cameraDelegate : AVCaptureFileOutputRecordingDelegate
 
     @Published public var isRecording = false
     public var settings: VideoSettings
 
-    public init(settings: VideoSettings) {
+    public init(settings: VideoSettings, delegate: AVCaptureFileOutputRecordingDelegate) {
         self.settings = settings
+        self.cameraDelegate = delegate
         super.init()
         configureSession()
     }
@@ -120,7 +122,7 @@ public final class CameraService: NSObject, ObservableObject {
         }
         print(" videoOutput\(videoOutput.description)")
 
-        videoOutput.startRecording(to: fileURL, recordingDelegate: self)
+        videoOutput.startRecording(to: fileURL, recordingDelegate: cameraDelegate)
         isRecording = true
         print(" videoOutput\(videoOutput.description)")
     }
@@ -136,7 +138,6 @@ public final class CameraService: NSObject, ObservableObject {
         print("⏹ Calling stopRecording()")
         videoOutput.stopRecording()
         print(" videoOutput\(videoOutput.description)")
-        isRecording = false
     }
 
 
