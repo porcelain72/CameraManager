@@ -37,9 +37,17 @@ public final class CameraService: NSObject, ObservableObject {
     public func startRecording() {
         guard let videoOutput = videoOutput, !isRecording else { return }
 
-        let fileURL = FileManager.default.temporaryDirectory
+        guard
+                let directoryPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            else {
+                print("Cannot access local file domain")
+                return
+            }
+        
+      //  let fileURL = FileManager.default.temporaryDirectory
+        let fileURL = directoryPath
             .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension("mov")
+            .appendingPathExtension("mp4")
 
         if let connection = videoOutput.connection(with: .video),
            connection.isVideoOrientationSupported {
